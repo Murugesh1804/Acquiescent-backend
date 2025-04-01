@@ -7,7 +7,7 @@ import {
   deleteBlog,
   getBlogCategoriesAndTags,
 } from "../controllers/blog.controller.js"
-import { protect, optionalAuth } from "../middleware/auth.middleware.js"
+import { protect } from "../middleware/auth.middleware.js"
 
 const router = express.Router()
 
@@ -17,7 +17,7 @@ router.get("/slug/:slug", getBlogBySlug)
 router.get("/categories-tags", getBlogCategoriesAndTags)
 
 // Protected routes
-router.post("/create", protect, createBlog)
+router.post("/create", createBlog)
 router.put("/update/:id", updateBlog)
 router.post("/delete/:id", deleteBlog)
 

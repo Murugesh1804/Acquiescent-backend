@@ -7,19 +7,19 @@ import {
   deleteCourse,
   getCourseStats,
 } from "../controllers/course.controller.js"
-import { protect, adminOnly, optionalAuth } from "../middleware/auth.middleware.js"
+import { protect} from "../middleware/auth.middleware.js"
 
 const router = express.Router()
 
 // Public/Optional Auth routes
-router.get("/", optionalAuth, getAllCourses)
-router.get("/slug/:slug", optionalAuth, getCourseBySlug)
+router.get("/", getAllCourses)
+router.get("/slug/:slug", getCourseBySlug)
 
 // Admin only routes
-router.post("/", protect, adminOnly, createCourse)
-router.put("/:id", protect, adminOnly, updateCourse)
-router.delete("/:id", protect, adminOnly, deleteCourse)
-router.get("/stats", protect, adminOnly, getCourseStats)
+router.post("/", protect, createCourse)
+router.put("/:id", protect, updateCourse)
+router.delete("/:id", protect, deleteCourse)
+router.get("/stats", protect, getCourseStats)
 
 export default router
 

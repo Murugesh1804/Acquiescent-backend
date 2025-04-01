@@ -7,14 +7,14 @@ import {
   enrollUserInCourse,
   getUserStats,
 } from "../controllers/user.controller.js"
-import { protect, adminOnly } from "../middleware/auth.middleware.js"
+import { protect } from "../middleware/auth.middleware.js"
 
 const router = express.Router()
 
 // Admin only routes
-router.get("/", protect, adminOnly, getAllUsers)
-router.get("/stats", protect, adminOnly, getUserStats)
-router.delete("/:id", protect, adminOnly, deleteUser)
+router.get("/", protect, getAllUsers)
+router.get("/stats", protect, getUserStats)
+router.delete("/:id", protect, deleteUser)
 
 // Protected routes
 router.get("/:id", protect, getUserById)
