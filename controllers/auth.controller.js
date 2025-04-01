@@ -77,7 +77,9 @@ export const register = async (req, res) => {
 export const getCurrentAdmin = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
+    console.log(user);
     if (!user || user.role !== "admin") {
+      console.log("Access denied");
       return res.status(403).json({ message: "Access denied" });
     }
 
