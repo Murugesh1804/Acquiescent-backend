@@ -92,6 +92,7 @@ export const getBlogBySlug = async (req, res) => {
 export const createBlog = async (req, res) => {
   try {
     // Set author to current user
+    console.log(req.admin)
     req.body.author = req.admin.id
 
     const blog = await Blog.create(req.body)
