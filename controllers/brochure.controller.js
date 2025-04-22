@@ -1,0 +1,31 @@
+import Brochure from '../models/brochure.js';
+
+export const createBrochureDownload = async (req, res) => {
+  try {
+    const { name, email, phone } = req.body;
+    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    const userAgent = req.headers['user-agent'];
+
+    const newDownload = await Brochure.create({
+      name,
+      email,
+      phone,
+      ip,
+      userAgent
+    });
+
+    res.status(201).json({ success: true, data: newDownload });
+  } catch (error) {
+    res.status(400).json({ success: false, error: error.message });
+  }
+};
+
+export const getAllBrochureDownloads = async (req, res) => {
+  try {
+    const downloads = await Brochure.find().sort({ createdAt: -1 });
+    res.status(200).json({ success: true, data: downloads });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
