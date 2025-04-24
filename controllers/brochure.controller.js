@@ -18,7 +18,7 @@ export const createBrochureDownload = async (req, res) => {
 
     // Trigger email sending to /send/email route
     try {
-      await axios.post(`http://localhost:3500/api/email/send`, {
+      await axios.post(`https://api.acquiescent.in/api/email/send`, {
         title: "New Brochure Download",
         body: `
 New user downloaded the brochure:

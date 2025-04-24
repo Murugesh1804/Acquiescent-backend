@@ -17,7 +17,7 @@ const storeQuery = async (req, res) => {
 
     // Send notification email
     try {
-      await axios.post(`http://localhost:3500/api/email/send`, {
+      await axios.post(`https://api.acquiescent.in/api/email/send`, {
         title: `📩 New Query Submitted: ${subject}`,
         body: `
 You have received a new query from the website:

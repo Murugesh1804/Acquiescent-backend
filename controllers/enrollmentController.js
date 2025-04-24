@@ -22,7 +22,7 @@ export const createEnrollment = async (req, res) => {
 
     // Send email with required details
     try {
-      await axios.post(`http://localhost:3500/api/email/send`, {
+      await axios.post(`https://api.acquiescent.in/api/email/send`, {
         title: "New Course Enrollment",
         body: `
 📥 A new course enrollment has been received!
