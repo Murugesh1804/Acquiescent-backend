@@ -12,6 +12,7 @@ import userRoutes from "./routes/user.routes.js"
 import enrollmentRoutes from "./routes/enrollRoutes.js"
 import queryRoutes from "./routes/queryRoutes.js"
 import brochure from "./routes/brochure.routes.js"
+import emailer from "./routes/emailer.router.js"
 
 // Configuration
 dotenv.config()
@@ -60,6 +61,7 @@ app.use("/api/users", userRoutes)
 app.use("/api/enrollments", enrollmentRoutes);
 app.use("/api/queries", queryRoutes);
 app.use("/api/brochure", brochure);
+app.use("/api/email", emailer);
 
 // Global file upload middleware
 app.post("/api/upload", upload.single("file"), (req, res) => {

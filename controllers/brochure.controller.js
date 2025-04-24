@@ -1,5 +1,7 @@
 import Brochure from '../models/brochure.js';
 
+import axios from "axios"; // if not already imported
+
 export const createBrochureDownload = async (req, res) => {
   try {
     const { name, email, phone } = req.body;
@@ -14,11 +16,30 @@ export const createBrochureDownload = async (req, res) => {
       userAgent
     });
 
+    // Trigger email sending to /send/email route
+    try {
+      await axios.post(`http://localhost:3500/api/email/send`, {
+        title: "New Brochure Download",
+        body: `
+New user downloaded the brochure:
+
+Name: ${name}
+Email: ${email}
+Phone: ${phone}
+IP Address: ${ip}
+User Agent: ${userAgent}
+        `
+      });
+    } catch (emailErr) {
+      console.error("Failed to send email notification:", emailErr.message);
+    }
+
     res.status(201).json({ success: true, data: newDownload });
   } catch (error) {
     res.status(400).json({ success: false, error: error.message });
   }
 };
+
 
 export const getAllBrochureDownloads = async (req, res) => {
   try {
