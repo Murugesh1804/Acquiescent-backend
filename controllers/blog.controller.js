@@ -1,4 +1,6 @@
 import Blog from "../models/blog.model.js"
+import multer from 'multer';
+import path from 'path';
 
 // Get all blogs
 export const getAllBlogs = async (req, res) => {
@@ -89,19 +91,61 @@ export const getBlogBySlug = async (req, res) => {
 //   }
 // }
 
+// Configure multer for image uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/blogs');
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, 'blog-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = /jpeg|jpg|png|webp/;
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = allowedTypes.test(file.mimetype);
+    
+    if (extname && mimetype) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only images are allowed'));
+    }
+  }
+}).single('featuredImage');
+
+// Update the createBlog controller
 export const createBlog = async (req, res) => {
   try {
-    console.log("Creating blog with data:", req.body)
-    const blog = await Blog.create(req.body)
+    upload(req, res, async (err) => {
+      if (err) {
+        return res.status(400).json({ message: err.message });
+      }
 
-    res.status(201).json({
-      success: true,
-      blog,
-    })
+      if (!req.file) {
+        return res.status(400).json({ message: 'Featured image is required' });
+      }
+
+      const blogData = {
+        ...req.body,
+        featuredImage: `/uploads/blogs/${req.file.filename}`
+      };
+
+      const blog = await Blog.create(blogData);
+
+      res.status(201).json({
+        success: true,
+        blog,
+      });
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: error.message });
   }
-}
+};
 
 // Update blog
 export const updateBlog = async (req, res) => {
