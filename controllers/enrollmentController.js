@@ -1,16 +1,52 @@
 import Enrollment from "../models/enrollment.js";
 import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
 
 export const createEnrollment = async (req, res) => {
   try {
-    const enrollmentId = uuidv4(); // Generate unique enrollment ID
-    const enrollment = new Enrollment({ ...req.body, enrollmentId });
+    const enrollmentId = uuidv4();
+    const enrollmentData = { ...req.body, enrollmentId };
+    const enrollment = new Enrollment(enrollmentData);
+
     await enrollment.save();
+
+    const {
+      firstName,
+      lastName,
+      email,
+      phone,
+      course,
+      message,
+      date
+    } = enrollment;
+
+    // Send email with required details
+    try {
+      await axios.post(`https://api.acquiescent.in/api/email/send`, {
+        title: "New Course Enrollment",
+        body: `
+📥 A new course enrollment has been received!
+
+🆔 Enrollment ID: ${enrollmentId}
+👤 Name: ${firstName} ${lastName}
+📧 Email: ${email}
+📱 Phone: ${phone}
+📚 Course: ${course}
+📝 Message: ${message || "N/A"}
+📅 Date: ${new Date(date).toLocaleString()}
+
+        `
+      });
+    } catch (emailErr) {
+      console.error("Failed to send enrollment email:", emailErr.message);
+    }
+
     res.status(201).json(enrollment);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 export const getEnrollments = async (req, res) => {
   try {

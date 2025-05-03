@@ -29,6 +29,7 @@ const blogSchema = new mongoose.Schema(
     },
     featuredImage: {
       type: String,
+      required: [true, "Featured image is required"],
     },
     categories: [
       {

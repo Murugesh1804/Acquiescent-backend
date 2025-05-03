@@ -1,11 +1,40 @@
 import Query from "../models/query.js";
-
-// Store Query
+import axios from "axios";
 const storeQuery = async (req, res) => {
   try {
     const query = new Query(req.body);
-    console.log(query);
     await query.save();
+
+    const {
+      firstName,
+      lastName,
+      email,
+      phone,
+      subject,
+      message,
+      createdAt
+    } = query;
+
+    // Send notification email
+    try {
+      await axios.post(`https://api.acquiescent.in/api/email/send`, {
+        title: `📩 New Query Submitted: ${subject}`,
+        body: `
+You have received a new query from the website:
+
+👤 Name: ${firstName} ${lastName}
+📧 Email: ${email}
+📱 Phone: ${phone}
+📌 Subject: ${subject}
+📝 Message: ${message}
+📅 Submitted At: ${new Date(createdAt).toLocaleString()}
+
+        `
+      });
+    } catch (emailErr) {
+      console.error("Failed to send query email:", emailErr.message);
+    }
+
     res.status(201).json({ message: "Query submitted successfully!" });
   } catch (error) {
     res.status(500).json({ error: error.message });
