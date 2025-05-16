@@ -4,7 +4,7 @@ import axios from "axios"; // if not already imported
 
 export const createBrochureDownload = async (req, res) => {
   try {
-    const { name, email, phone } = req.body;
+    const { name, email, phone, course } = req.body;
     const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     const userAgent = req.headers['user-agent'];
 
@@ -12,6 +12,7 @@ export const createBrochureDownload = async (req, res) => {
       name,
       email,
       phone,
+      course,
       ip,
       userAgent
     });
@@ -23,6 +24,7 @@ export const createBrochureDownload = async (req, res) => {
         body: `
 New user downloaded the brochure:
 
+Course: ${course}
 Name: ${name}
 Email: ${email}
 Phone: ${phone}
